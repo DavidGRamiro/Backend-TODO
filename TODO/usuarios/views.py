@@ -10,8 +10,6 @@ class UsuarioViewSet(viewsets.ModelViewSet):
     serializer_class = UsuarioSerializer
     queryset = Usuario.objects.all()
     
-    
-    
     def list(self,request):
         queryset = Usuario.objects.all()
         serializador = UsuarioSerializer(queryset, many=True)
