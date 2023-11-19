@@ -22,8 +22,10 @@ DATA = 'data'
 
 class RolBl():
     
+    # Instancia del modelo
     modelo = Rol
     
+    # Método create de un nuevo rol 
     def create(self, oData):
         
         rol = oData.data
@@ -37,7 +39,8 @@ class RolBl():
                                 status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response({ RESULTADO: ROL_EXISTENTE }, status=status.HTTP_400_BAD_REQUEST)
-        
+
+    # Comprobar los roles existentes. Si existe ese tipo de rol, cancelamos la acción
     def comprobar_roles(self, rol):
         tipo_rol = rol.get('tipo_rol')
         roles_bd = Rol.objects.filter(tipo_rol=tipo_rol).first()
@@ -46,6 +49,7 @@ class RolBl():
         else:
             return False
     
+    # Actualización de un tipo de rol
     def update(self, oData, pk):
         update_rol = Rol.objects.filter(pk=pk).first()
         if update_rol is not None:
@@ -59,6 +63,7 @@ class RolBl():
         else:
             return Response({ RESULTADO: ROL_NO_EXISTE }, status=status.HTTP_404_NOT_FOUND)
     
+    # Eliminar un tipo de rol
     def destroy(self, pk):
         rol_buscado = Rol.objects.filter(pk=pk).first();
         if rol_buscado is not None:
