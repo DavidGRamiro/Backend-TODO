@@ -1,6 +1,6 @@
 
 
-class TareaBL():
+class CategoriaBL():
     
     def create(self, data): ...
     

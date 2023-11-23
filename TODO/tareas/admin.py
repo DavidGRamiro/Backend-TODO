@@ -1,13 +1,15 @@
 from django.contrib import admin
+from tareas.models import Tarea
+from tareas.models import Categoria
 
 # Register your models here.
 
 @admin.register(Tarea)
-# Register your models here.
 class TareaAdmin(admin.ModelAdmin):
     list_display = ('id','titulo','descripcion','severity')
     search_fields = ('id', 'severity')
 
-
-
-admin.site.register()
+@admin.register(Categoria)
+class CategoriaAdmin(admin.ModelAdmin):
+    list_display = ('id',)
+    search_fields = ('id',)
