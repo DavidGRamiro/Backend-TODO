@@ -4,8 +4,8 @@ from django.db import models
 class Usuario(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=20)
-    first_name = models.CharField(max_length=100)
-    last_name = models.CharField(max_length=100)
+    password = models.CharField(max_length=100)
+    username = models.CharField(max_length=100)
     email = models.EmailField(max_length=254,null = True, blank=True)
     direccion = models.CharField(max_length=200, null=True, blank=True)
     id_fk_rol = models.ForeignKey('Rol', null=False, blank=False, on_delete=models.DO_NOTHING)
