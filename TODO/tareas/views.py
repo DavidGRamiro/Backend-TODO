@@ -22,13 +22,16 @@ class TareaViewSet(viewsets.ModelViewSet):
         return busqueda_id
     
     def create(self, request):
-        return Response(self.class_bl.create(request))
-    
+        respuesta = self.class_bl.create(request)
+        return respuesta
+
     def update(self, request, pk):
-        return Response(self.class_bl.update(request,pk))
+        respuesta = self.class_bl.update(request,pk)
+        return respuesta
     
     def destroy(self, request, pk):
-        return Response(self.class_bl.destroy(pk))
+        respuesta = self.class_bl.destroy(pk)
+        return respuesta
     
 class CategoriaViewSet(viewsets.ModelViewSet):
     # Instancia de BL

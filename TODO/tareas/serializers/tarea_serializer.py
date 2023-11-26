@@ -5,7 +5,7 @@ from tareas.models import Tarea
 
 class TareaSerializer(serializers.ModelSerializer):
     class Meta:
-        fields = '__all__'
         model = Tarea
+        fields = '__all__'
 
 
