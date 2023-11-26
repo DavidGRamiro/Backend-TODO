@@ -3,7 +3,7 @@ from usuarios.models import Usuario, Rol
 @admin.register(Usuario)
 # Register your models here.
 class UsuarioAdmin(admin.ModelAdmin):
-    list_display = ('id','name','first_name','last_name','email','direccion')
+    list_display = ('id','name', 'username','email','direccion')
     search_fields = ('id', 'name')
 
 @admin.register(Rol)

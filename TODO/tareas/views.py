@@ -13,17 +13,25 @@ class TareaViewSet(viewsets.ModelViewSet):
     queryset = Tarea.objects.all()
     serializer_class =TareaSerializer
     
-    # def get_queryset(self):
-    #     return super().get_queryset()
+    def get_queryset(self):
+        tarea = self.request.query_params.get('id')
+        if tarea:
+            busqueda_id = self.queryset.filter(id = tarea).first()
+        else:
+            busqueda_id = Tarea.objects.all();
+        return busqueda_id
     
-    # def create(self, request):
-    #     return Response(self.class_bl.create(request))
-    
+    def create(self, request):
+        respuesta = self.class_bl.create(request)
+        return respuesta
+
     def update(self, request, pk):
-        return Response(self.class_bl.update(request,pk))
+        respuesta = self.class_bl.update(request,pk)
+        return respuesta
     
     def destroy(self, request, pk):
-        return Response(self.class_bl.destroy(pk))
+        respuesta = self.class_bl.destroy(pk)
+        return respuesta
     
 class CategoriaViewSet(viewsets.ModelViewSet):
     # Instancia de BL
@@ -32,13 +40,21 @@ class CategoriaViewSet(viewsets.ModelViewSet):
     serializer_class = CategoriaSerializer
     
     def get_queryset(self):
-        return self.queryset
+        categoria = self.request.query_params.get('id')
+        if categoria:
+            busqueda_id = self.queryset.filter(id=categoria).first()
+        else:
+            busqueda_id = Categoria.objects.all()
+        return busqueda_id
     
     def create(self, request):
-        return Response(self.class_bl.create(request))
+        respuesta = self.class_bl.create(request)
+        return respuesta
     
     def update(self, request, pk):
-        return Response(self.class_bl.update(request,pk))
+        respuesta = self.class_bl.update(request, pk)
+        return respuesta
     
     def destroy(self, request, pk):
-        return Response(self.class_bl.destroy(pk))
+        respuesta = self.class_bl.destroy(pk);
+        return respuesta

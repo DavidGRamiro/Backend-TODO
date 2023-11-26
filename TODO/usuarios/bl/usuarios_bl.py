@@ -20,14 +20,14 @@ RESULTADO = 'resultado'
 ERROR = 'error'
 
 # Bussines Logic para sobreescribir los métodos CRUD por defecto y hacer validaciones adicionales
-class UsuariosBl():
+class UsuariosBl:
     # Instancia al modelo
     modelo = Usuario
     
     # Alta de usuario. Comprueba, que el email que introduce no es repetico con el que tengamos en BBDD
     # A su vez, se comprueba que ha definido un rol a la hora de mandar la petición de registro.
-    def create(self, oData):
-        dato_usuario = oData.data
+    def create(self, request):
+        dato_usuario = request.data
         email_valido = self.verificar_email(dato_usuario.get('email'))
         if email_valido:
             self.comprobar_rol(dato_usuario)
@@ -61,7 +61,7 @@ class UsuariosBl():
         rol_usuario = usuario.get('id_fk_rol')
         
         if rol_usuario is None:
-            usuario['id_fk_rol'] = TipoRol.BASICO
+            usuario['id_fk_rol'] = TipoRol.BASICO.value
             return usuario
         else: return;
     

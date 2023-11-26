@@ -1,0 +1,19 @@
+# Ignorar archivos de bytecode compilados de Python
+*.pyc
+__pycache__
+
+# Ignorar archivos de caché específicos de Django
+*.sqlite3
+*.pyc
+*.pyo
+*.pyc
+*.pyo
+*.log
+
+# Ignorar directorios de entornos virtuales (si utilizas entornos virtuales)
+venv/
+env/
+
+# Ignorar archivos y directorios generados localmente
+*.DS_Store
+*.idea/

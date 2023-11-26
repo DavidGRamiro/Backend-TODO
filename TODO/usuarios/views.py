@@ -12,6 +12,7 @@ from usuarios.models import Rol
 class UsuarioViewSet(viewsets.ModelViewSet):
     # Instancia Bussiness Logic
     class_bl = UsuariosBl()
+    serializer_class = UsuarioSerializer
     
     def get_queryset(self):
         return super().get_queryset();
