@@ -1,8 +1,15 @@
-
+from rest_framework.response import Response
 
 class TareaBL():
     
-    def create(self, data): ...
+    # Creación de una nueva categoria
+    def create(self, data):
+        
+        categoria = data.data
+        
+        
+        
+        ...
     
     def update(self, data, pk): ...
     
