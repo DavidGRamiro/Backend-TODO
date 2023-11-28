@@ -6,6 +6,10 @@ from usuarios.models import Usuario
 from rest_framework import status
 from Comun.Enumerados.enumerados import TipoRol
 
+from rest_framework.authtoken.models import Token
+from django.contrib.auth import authenticate
+from django.contrib.auth.models import User
+
 # Mensajes para respuestas de Eroores o Success
 CREADO_EXITO = "El usuario ha sido creado con éxito"
 NO_CREADO = "No se ha podido crear el usuario"
@@ -88,3 +92,18 @@ class UsuariosBl:
             return Response({ RESULTADO:USUARIO_ELIMINADO }, status=status.HTTP_204_NO_CONTENT)
         else:
             return Response({ RESULTADO: USUARIO_NOT_FOUND }, status=status.HTTP_404_NOT_FOUND)
+    
+    def login_usuario(self,request):
+        
+        username = request.data.get('username')
+        password = request.data.get('password')
+        
+        usuario = authenticate(username=username, password=password)
+        user = Token.objects.get_or_create(user=user)
+        
+        
+        if user:
+            token = Token.get(user=user)
+            return Response({ RESULTADO: token.key}, status=status.HTTP_200_OK)
+        else:
+            return Response({'error': 'Credenciales inválidas'}, status=status.HTTP_401_UNAUTHORIZED)

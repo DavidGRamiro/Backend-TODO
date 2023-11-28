@@ -9,6 +9,9 @@ from usuarios.serializers.rol import RolSerializer
 from usuarios.models import Usuario
 from usuarios.models import Rol
 
+
+from rest_framework.decorators import action
+
 class UsuarioViewSet(viewsets.ModelViewSet):
     # Instancia Bussiness Logic
     class_bl = UsuariosBl()
@@ -32,6 +35,11 @@ class UsuarioViewSet(viewsets.ModelViewSet):
     
     def destroy(self, request, pk):
         respuesta = self.class_bl.destroy(pk);
+        return respuesta
+    
+    @action(methods=['post'],detail=False, url_path='login', url_name='login')
+    def login(self, request):
+        respuesta = self.class_bl.login_usuario(request);
         return respuesta
 
 
