@@ -1,6 +1,6 @@
 
 from django.urls import path
-from usuarios.views import RolViewSet, UsuarioViewSet
+from .views import RolViewSet, UsuarioViewSet
 from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()

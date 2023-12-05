@@ -2,13 +2,11 @@ from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework import status
 
-from usuarios.bl.usuarios_bl import UsuariosBl
-from usuarios.bl.rol_bl import RolBl
-from usuarios.serializers.usuario import UsuarioSerializer
-from usuarios.serializers.rol import RolSerializer
-from usuarios.models import Usuario
-from usuarios.models import Rol
-
+from .models import Usuario, Rol
+from .serializers.rol import RolSerializer
+from .serializers.usuario import UsuarioSerializer
+from .bl.usuarios_bl import UsuariosBl
+from .bl.rol_bl import RolBl
 
 from rest_framework.decorators import action
 
@@ -21,9 +19,9 @@ class UsuarioViewSet(viewsets.ModelViewSet):
         return super().get_queryset();
 
     def list(self,request):
-        queryset = Usuario.objects.all();
-        serializador = UsuarioSerializer(queryset, many=True);
-        return Response(serializador.data);
+        queryset = Usuario.objects.all()
+        serializador = UsuarioSerializer(queryset, many=True)
+        return Response(serializador.data)
     
     def create(self, request):
         respuesta = self.class_bl.create(request);
@@ -46,19 +44,19 @@ class UsuarioViewSet(viewsets.ModelViewSet):
 class RolViewSet(viewsets.ModelViewSet):
     
     # Instancia Bussiness Logic
-    class_bl = RolBl();
+    class_bl = RolBl()
     
     def get_queryset(self):
         return super().get_queryset();
     
     def list(self,request):
         queryset = Rol.objects.all();
-        serializador = RolSerializer(queryset, many=True);
-        return Response(serializador.data);
+        serializador = RolSerializer(queryset, many=True)
+        return Response(serializador.data)
     
     def create(self, request):
-        respuesta = self.class_bl.create(request);
-        return respuesta;
+        respuesta = self.class_bl.create(request)
+        return respuesta
     
     def update(self, request, pk):
         respuesta = self.class_bl.update(request,pk);
