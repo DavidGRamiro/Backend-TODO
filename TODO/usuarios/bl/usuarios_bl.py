@@ -26,6 +26,7 @@ USUARIO_ELIMINADO = "El usuario ha sido eliminado"
 RESULTADO = 'resultado'
 ERROR = 'error',
 DATA = 'data'
+# TODO: Implementar este objeto en la respuesta para su procesamiento
 CODIDO = 'cod'
 
 # Bussines Logic para sobreescribir los métodos CRUD por defecto y hacer validaciones adicionales
@@ -33,8 +34,9 @@ class UsuariosBl:
     # Instancia al modelo
     modelo = Usuario
     
-    # Alta de usuario. Comprueba, que el email que introduce no es repetico con el que tengamos en BBDD
+    # Alta de usuario. Comprueba, que el email que introduce no es repetido con el que tengamos en BBDD
     # A su vez, se comprueba que ha definido un rol a la hora de mandar la petición de registro.
+    # Se asigna un token de usuario
     def create(self, request):
         dato_usuario = request.data
         email_valido = self.verificar_email(dato_usuario.get('email'))
@@ -50,6 +52,10 @@ class UsuariosBl:
             self.comprobar_rol(dato_usuario)
             serializador = UsuarioSerializer(data=dato_usuario)
             if serializador.is_valid():
+                
+                # Asignar un token al usuario
+                token, created = Token.objects.get_or_create(user=user)
+                
                 serializador.save()
                 return Response({ RESULTADO: CREADO_EXITO, CODIDO: 200}, status = status.HTTP_201_CREATED)
             else:
@@ -106,6 +112,7 @@ class UsuariosBl:
         else:
             return Response({ RESULTADO: USUARIO_NOT_FOUND }, status=status.HTTP_404_NOT_FOUND)
     
+    # Inicio de sesión de usuario
     def login_usuario(self,request):
         
         username = request.data.get('username')
@@ -114,7 +121,10 @@ class UsuariosBl:
         usuario = authenticate(username=username, password=password)
         # user = Token.objects.get_or_create(user=user)
         if usuario:
+            
+            token = Token.objects.get(user=usuario) 
+            
             json_data = model_to_dict(usuario)
-            return Response({ RESULTADO: 'Usuario autenticado', DATA: json_data}, status=status.HTTP_200_OK)
+            return Response({ RESULTADO: 'Usuario autenticado', DATA: json_data, 'token': token.key}, status=status.HTTP_200_OK)
         else:
             return Response({'error': 'Credenciales inválidas'}, status=status.HTTP_401_UNAUTHORIZED)
