@@ -42,6 +42,13 @@ INSTALLED_APPS = [
     'usuarios',
     'tareas'
 ]
+# Para la autenticacion en las vistas
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ]
+}
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',

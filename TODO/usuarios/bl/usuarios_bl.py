@@ -9,6 +9,9 @@ from Comun.Enumerados.enumerados import TipoRol
 from rest_framework.authtoken.models import Token
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
+from django.forms.models import model_to_dict
+from django.contrib.auth import get_user_model
+
 
 # Mensajes para respuestas de Eroores o Success
 CREADO_EXITO = "El usuario ha sido creado con éxito"
@@ -21,7 +24,9 @@ USUARIO_ELIMINADO = "El usuario ha sido eliminado"
 
 # JSON para objeto Response
 RESULTADO = 'resultado'
-ERROR = 'error'
+ERROR = 'error',
+DATA = 'data'
+CODIDO = 'cod'
 
 # Bussines Logic para sobreescribir los métodos CRUD por defecto y hacer validaciones adicionales
 class UsuariosBl:
@@ -34,17 +39,25 @@ class UsuariosBl:
         dato_usuario = request.data
         email_valido = self.verificar_email(dato_usuario.get('email'))
         if email_valido:
+            
+            # Insertar una nueva linea en la tabla de auth_user
+            user = get_user_model().objects.create_user(
+                username = dato_usuario['username'],
+                email = dato_usuario['email'],
+                password = dato_usuario['password']
+            )
+            
             self.comprobar_rol(dato_usuario)
             serializador = UsuarioSerializer(data=dato_usuario)
             if serializador.is_valid():
                 serializador.save()
-                return Response({ RESULTADO: CREADO_EXITO}, status = status.HTTP_201_CREATED)
+                return Response({ RESULTADO: CREADO_EXITO, CODIDO: 200}, status = status.HTTP_201_CREATED)
             else:
                 error = serializador.errors
                 return Response({ RESULTADO: NO_CREADO, ERROR: error } , 
                                 status=status.HTTP_400_BAD_REQUEST)
         else:
-            return Response({ RESULTADO : EMAIL_INVALIDO}, status=status.HTTP_401_UNAUTHORIZED)
+            return Response({ RESULTADO : EMAIL_INVALIDO, CODIDO:401})
     
     
     # Verificación existente del email de usuario
@@ -99,11 +112,9 @@ class UsuariosBl:
         password = request.data.get('password')
         
         usuario = authenticate(username=username, password=password)
-        user = Token.objects.get_or_create(user=user)
-        
-        
-        if user:
-            token = Token.get(user=user)
-            return Response({ RESULTADO: token.key}, status=status.HTTP_200_OK)
+        # user = Token.objects.get_or_create(user=user)
+        if usuario:
+            json_data = model_to_dict(usuario)
+            return Response({ RESULTADO: 'Usuario autenticado', DATA: json_data}, status=status.HTTP_200_OK)
         else:
             return Response({'error': 'Credenciales inválidas'}, status=status.HTTP_401_UNAUTHORIZED)
