@@ -21,6 +21,8 @@ USER_ACTUALIZADO = "Los datos del usuario se han actualizado"
 USER_ERROR_UPDATE = "No se ha podido actualizar los datos del usuario"
 USUARIO_NOT_FOUND = "El usuario buscado no existe"
 USUARIO_ELIMINADO = "El usuario ha sido eliminado"
+USUARIO_LOGUEADO = "Usuario logueado"
+CREDENCIALES_IMVALIDAS = "Credenciales invalidas"
 
 # JSON para objeto Response
 RESULTADO = 'resultado'
@@ -28,6 +30,7 @@ ERROR = 'error',
 DATA = 'data'
 # TODO: Implementar este objeto en la respuesta para su procesamiento
 CODIDO = 'cod'
+DATA_USUARIO = 'user_data'
 
 # Bussines Logic para sobreescribir los métodos CRUD por defecto y hacer validaciones adicionales
 class UsuariosBl:
@@ -114,17 +117,30 @@ class UsuariosBl:
     
     # Inicio de sesión de usuario
     def login_usuario(self,request):
-        
         username = request.data.get('username')
         password = request.data.get('password')
         
         usuario = authenticate(username=username, password=password)
-        # user = Token.objects.get_or_create(user=user)
         if usuario:
-            
             token = Token.objects.get(user=usuario) 
-            
-            json_data = model_to_dict(usuario)
-            return Response({ RESULTADO: 'Usuario autenticado', DATA: json_data, 'token': token.key}, status=status.HTTP_200_OK)
+            return Response({ RESULTADO: USUARIO_LOGUEADO,
+                            CODIDO: 200,
+                            'token': token.key}, 
+                            status=status.HTTP_200_OK)
         else:
-            return Response({'error': 'Credenciales inválidas'}, status=status.HTTP_401_UNAUTHORIZED)
+            return Response({ERROR: CREDENCIALES_IMVALIDAS}, status=status.HTTP_401_UNAUTHORIZED)
+
+    # Obtener informacion del token del usuario
+    def info_token(self,request):
+        token_key = request.META.get('HTTP_AUTHORIZATION').split(' ')[1]
+
+        try:
+            token = Token.objects.get(key=token_key)
+            email_user = token.user.email
+            usuario_logueado = Usuario.objects.filter(email=email_user).first()
+            user = model_to_dict(usuario_logueado)
+            if user:
+                return Response({ RESULTADO: USUARIO_LOGUEADO, DATA: user })
+            
+        except:
+            return Response({ ERROR: USUARIO_NOT_FOUND })

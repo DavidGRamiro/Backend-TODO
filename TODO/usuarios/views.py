@@ -1,6 +1,7 @@
 from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework import permissions
 
 from .models import Usuario, Rol
 from .serializers.rol import RolSerializer
@@ -14,6 +15,7 @@ class UsuarioViewSet(viewsets.ModelViewSet):
     # Instancia Bussiness Logic
     class_bl = UsuariosBl()
     serializer_class = UsuarioSerializer
+    # permission_classes = [permissions.AllowAny]
     
     def get_queryset(self):
         return super().get_queryset();
@@ -38,6 +40,11 @@ class UsuarioViewSet(viewsets.ModelViewSet):
     @action(methods=['post'],detail=False, url_path='login', url_name='login')
     def login(self, request):
         respuesta = self.class_bl.login_usuario(request);
+        return respuesta
+    
+    @action(methods=['get'],detail=False, url_path='auth', url_name='auth')
+    def get_token_info(self, request):
+        respuesta = self.class_bl.info_token(request);
         return respuesta
 
 
