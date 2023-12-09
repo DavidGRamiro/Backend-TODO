@@ -1,5 +1,8 @@
 from django.contrib import admin
+
 from usuarios.models import Usuario, Rol
+
+
 @admin.register(Usuario)
 # Register your models here.
 class UsuarioAdmin(admin.ModelAdmin):

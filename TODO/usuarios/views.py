@@ -1,26 +1,29 @@
 from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework import permissions
 
-from usuarios.bl.usuarios_bl import UsuariosBl
-from usuarios.bl.rol_bl import RolBl
-from usuarios.serializers.usuario import UsuarioSerializer
-from usuarios.serializers.rol import RolSerializer
-from usuarios.models import Usuario
-from usuarios.models import Rol
+from .models import Usuario, Rol
+from .serializers.rol import RolSerializer
+from .serializers.usuario import UsuarioSerializer
+from .bl.usuarios_bl import UsuariosBl
+from .bl.rol_bl import RolBl
+
+from rest_framework.decorators import action
 
 class UsuarioViewSet(viewsets.ModelViewSet):
     # Instancia Bussiness Logic
     class_bl = UsuariosBl()
     serializer_class = UsuarioSerializer
+    # permission_classes = [permissions.AllowAny]
     
     def get_queryset(self):
         return super().get_queryset();
 
     def list(self,request):
-        queryset = Usuario.objects.all();
-        serializador = UsuarioSerializer(queryset, many=True);
-        return Response(serializador.data);
+        queryset = Usuario.objects.all()
+        serializador = UsuarioSerializer(queryset, many=True)
+        return Response(serializador.data)
     
     def create(self, request):
         respuesta = self.class_bl.create(request);
@@ -33,24 +36,34 @@ class UsuarioViewSet(viewsets.ModelViewSet):
     def destroy(self, request, pk):
         respuesta = self.class_bl.destroy(pk);
         return respuesta
+    
+    @action(methods=['post'],detail=False, url_path='login', url_name='login')
+    def login(self, request):
+        respuesta = self.class_bl.login_usuario(request);
+        return respuesta
+    
+    @action(methods=['get'],detail=False, url_path='auth', url_name='auth')
+    def get_token_info(self, request):
+        respuesta = self.class_bl.info_token(request);
+        return respuesta
 
 
 class RolViewSet(viewsets.ModelViewSet):
     
     # Instancia Bussiness Logic
-    class_bl = RolBl();
+    class_bl = RolBl()
     
     def get_queryset(self):
         return super().get_queryset();
     
     def list(self,request):
         queryset = Rol.objects.all();
-        serializador = RolSerializer(queryset, many=True);
-        return Response(serializador.data);
+        serializador = RolSerializer(queryset, many=True)
+        return Response(serializador.data)
     
     def create(self, request):
-        respuesta = self.class_bl.create(request);
-        return respuesta;
+        respuesta = self.class_bl.create(request)
+        return respuesta
     
     def update(self, request, pk):
         respuesta = self.class_bl.update(request,pk);

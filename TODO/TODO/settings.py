@@ -38,10 +38,18 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'corsheaders',
+    'rest_framework.authtoken',
     'rest_framework',
     'usuarios',
     'tareas'
 ]
+# Para la autenticacion en las vistas
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ]
+}
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
@@ -91,6 +99,14 @@ DATABASES = {
         'PORT':'5432'
     }
 }
+
+CORS_ALLOW_METHODS = [
+    'GET',
+    'POST',
+    'PUT',  
+    'DELETE',
+    'OPTIONS',
+]
 
 
 # Password validation
