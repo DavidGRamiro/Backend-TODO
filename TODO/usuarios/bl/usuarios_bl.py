@@ -144,3 +144,7 @@ class UsuariosBl:
             
         except:
             return Response({ ERROR: USUARIO_NOT_FOUND })
+        
+    # Logout de usuario por token
+    def logout_user(self,request):
+        user_token = request
