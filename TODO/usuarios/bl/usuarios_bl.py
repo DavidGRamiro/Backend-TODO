@@ -4,13 +4,15 @@ from rest_framework.response import Response
 from usuarios.serializers.usuario import UsuarioSerializer
 from usuarios.models import Usuario
 from rest_framework import status
-from Comun.Enumerados.enumerados import TipoRol
+from comun.Enumerados.enumerados import TipoRol
 
 from rest_framework.authtoken.models import Token
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from django.forms.models import model_to_dict
 from django.contrib.auth import get_user_model
+
+from django.contrib.auth import logout
 
 
 # Mensajes para respuestas de Eroores o Success
@@ -23,6 +25,7 @@ USUARIO_NOT_FOUND = "El usuario buscado no existe"
 USUARIO_ELIMINADO = "El usuario ha sido eliminado"
 USUARIO_LOGUEADO = "Usuario logueado"
 CREDENCIALES_IMVALIDAS = "Credenciales invalidas"
+USUARIO_DESLOGUEADO = "Usuario deslogueado"
 
 # JSON para objeto Response
 RESULTADO = 'resultado'
@@ -122,10 +125,10 @@ class UsuariosBl:
         
         usuario = authenticate(username=username, password=password)
         if usuario:
-            token = Token.objects.get(user=usuario) 
+            token = Token.objects.get_or_create(user=usuario) 
             return Response({ RESULTADO: USUARIO_LOGUEADO,
                             CODIDO: 200,
-                            'token': token.key}, 
+                            'token': token[0].key}, 
                             status=status.HTTP_200_OK)
         else:
             return Response({ERROR: CREDENCIALES_IMVALIDAS}, status=status.HTTP_401_UNAUTHORIZED)
@@ -147,4 +150,10 @@ class UsuariosBl:
         
     # Logout de usuario por token
     def logout_user(self,request):
-        user_token = request
+        
+        try:
+            token = Token.objects.get(user=request.user)
+            token.delete()
+            return Response({ RESULTADO: USUARIO_DESLOGUEADO })
+        except:
+            pass

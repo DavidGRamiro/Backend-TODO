@@ -2,7 +2,8 @@ from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.authentication import TokenAuthentication
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
+from comun.Auth.auth_token import CustomTokenAuthentication
 
 from .models import Usuario, Rol
 from .serializers.rol import RolSerializer
@@ -14,11 +15,20 @@ from rest_framework.decorators import action
 
 class UsuarioViewSet(viewsets.ModelViewSet):
     # Instancia Bussiness Logic
-    authentication_classes = [TokenAuthentication]
+    authentication_classes = [CustomTokenAuthentication]
     permission_classes = [IsAuthenticated]
     
     class_bl = UsuariosBl()
     serializer_class = UsuarioSerializer
+    
+    def get_permissions(self):
+        if self.action in ['create','login']:
+            self.permission_classes = [AllowAny]
+        else:
+            self.permission_classes = [IsAuthenticated]
+
+        return [permission() for permission in self.permission_classes]
+
     def get_queryset(self):
         return super().get_queryset();
 
@@ -28,7 +38,9 @@ class UsuarioViewSet(viewsets.ModelViewSet):
         return Response(serializador.data)
     
     def create(self, request):
+        # self.permission_classes = [AllowAny]
         respuesta = self.class_bl.create(request);
+        # self.permission_classes = [IsAuthenticated]
         return respuesta;
     
     def update(self, request, pk):
