@@ -16,6 +16,10 @@ class Tarea(models.Model):
     
     def __str__(self):
         return str(self.id) + ' ' + self.id_fk_usuario__nombre + ' ' + self.severity
+    
+    @property
+    def usuario_asignado(self):
+        return self.id_fk_usuario__name
 
 
 class Categoria(models.Model):

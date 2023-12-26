@@ -12,7 +12,6 @@ NOT_UPDATE = 'No se ha podido actualizar los datos de la tarea'
 NOT_FOUND = 'Tarea no encontrada'
 DELETE_TAREA = 'La tarea ha sido eliminada'
 
-
 # Objeto Response
 RESULTADO = 'resultado'
 DATA = 'data'
