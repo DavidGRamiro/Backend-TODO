@@ -38,9 +38,7 @@ class UsuarioViewSet(viewsets.ModelViewSet):
         return Response(serializador.data)
     
     def create(self, request):
-        # self.permission_classes = [AllowAny]
         respuesta = self.class_bl.create(request);
-        # self.permission_classes = [IsAuthenticated]
         return respuesta;
     
     def update(self, request, pk):

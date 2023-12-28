@@ -1,7 +1,9 @@
+import datetime
 from rest_framework.response import Response
 from tareas.models import Tarea
 from tareas.serializers.tarea_serializer import TareaSerializer
 from rest_framework import status
+from datetime import datetime
 
 # Mensajes de errores
 TAREA_CREADA = 'Nueva tarea dada de alta'
@@ -22,13 +24,23 @@ class TareaBL():
     # Creación de una nueva categoria
     def create(self, request):
         tarea = request.data
+        usuario = request.user
         if tarea is not None:
+            
+            tarea['fecha_estimada'] = datetime.strptime(tarea['fecha_estimada'], '%d/%m/%Y').strftime('%Y-%m-%d')
+            tarea['fecha_comienzo'] = datetime.strptime(tarea['fecha_comienzo'], '%d/%m/%Y').strftime('%Y-%m-%d')
+            
+            self.asignar_fecha(tarea)
+            user = self.buscar_usuario(usuario)
+            tarea['id_fk_usuario'] = user.id
+            
+            
             serilizador = TareaSerializer(data=tarea)
             if serilizador.is_valid():
                 serilizador.save()
                 return Response({RESULTADO: TAREA_CREADA},status=status.HTTP_200_OK )
             else:
-                return Response({ERROR: TAREA_NO_CREADA}, status=status.HTTP_404_NOT_FOUND)
+                return Response({ERROR: serilizador.errors}, status=status.HTTP_404_NOT_FOUND)
         else:
             return Response({RESULTADO: NO_DATA},status=status.HTTP_400_BAD_REQUEST )
     
@@ -55,4 +67,18 @@ class TareaBL():
             return Response({RESULTADO:DELETE_TAREA,DATA: serializador.data},status=status.HTTP_202_ACCEPTED)
         else:
             return Response({ERROR:NOT_FOUND}, status=status.HTTP_404_NOT_FOUND)
+    
+    # Obtenemos la diferencia de días entre la fecha de creación y la estimada de finalización
+    def asignar_fecha(self, tarea):
         
+        fecha_comienzo = datetime.strptime(tarea['fecha_comienzo'], '%Y-%m-%d')
+        fecha_estimada = datetime.strptime(tarea['fecha_estimada'], '%Y-%m-%d')
+        diferencia = fecha_estimada - fecha_comienzo    
+        tarea['tiempo_restante'] = diferencia.days
+    
+    def buscar_usuario(self,usuario):
+        
+        from usuarios.models import Usuario
+        user = Usuario.objects.filter(email=usuario.email).first()
+        if user is not None:
+            return user
