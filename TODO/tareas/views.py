@@ -59,6 +59,17 @@ class CategoriaViewSet(viewsets.ModelViewSet):
     queryset = Categoria.objects.all()
     serializer_class = CategoriaSerializer
     
+    authentication_classes = [CustomTokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    
+    # Cambiar a futuro, no se podrá consultar ni dar de alta sin estar autenticado
+    def get_permissions(self):
+        if self.action in ['list','create']:
+            self.permission_classes = [AllowAny]
+        else:
+            self.permission_classes = [IsAuthenticated]
+        return [permission() for permission in self.permission_classes]
+    
     def get_queryset(self):
         categoria = self.request.query_params.get('id')
         if categoria:

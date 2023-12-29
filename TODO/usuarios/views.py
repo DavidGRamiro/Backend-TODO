@@ -22,7 +22,7 @@ class UsuarioViewSet(viewsets.ModelViewSet):
     serializer_class = UsuarioSerializer
     
     def get_permissions(self):
-        if self.action in ['create','login']:
+        if self.action in ['create','login','logout']:
             self.permission_classes = [AllowAny]
         else:
             self.permission_classes = [IsAuthenticated]
@@ -38,9 +38,7 @@ class UsuarioViewSet(viewsets.ModelViewSet):
         return Response(serializador.data)
     
     def create(self, request):
-        # self.permission_classes = [AllowAny]
         respuesta = self.class_bl.create(request);
-        # self.permission_classes = [IsAuthenticated]
         return respuesta;
     
     def update(self, request, pk):
