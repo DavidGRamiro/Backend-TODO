@@ -47,8 +47,19 @@ class TareaBL():
     # Actualizar los datos de una tarea
     def update(self, request, pk):
         tarea = request.data
+        usuario = request.user
         update_tarea  = Tarea.objects.filter(pk=pk).first()
+        
         if update_tarea is not None:
+            
+            user = self.buscar_usuario(usuario)
+            tarea['id_fk_usuario'] = user.id
+            
+            
+            tarea['fecha_estimada'] = datetime.strptime(tarea['fecha_estimada'], '%d/%m/%Y').strftime('%Y-%m-%d')
+            tarea['fecha_comienzo'] = datetime.strptime(tarea['fecha_comienzo'], '%d/%m/%Y').strftime('%Y-%m-%d')
+            self.asignar_fecha(tarea)
+            
             serializador = TareaSerializer(update_tarea, data = tarea)
             if serializador.is_valid():
                 serializador.save()
