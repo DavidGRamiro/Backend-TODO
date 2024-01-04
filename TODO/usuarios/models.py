@@ -7,8 +7,8 @@ class Usuario(models.Model):
     password = models.CharField(max_length=100)
     username = models.CharField(max_length=100)
     email = models.EmailField(max_length=254,null = True, blank=True)
-    direccion = models.CharField(max_length=200, null=True, blank=True)
     id_fk_rol = models.ForeignKey('Rol', null=False, blank=False, on_delete=models.DO_NOTHING)
+    avatar = models.CharField(max_length=500,null=True)
     
     def __str__(self):
         return str(self.id) + self.name + self.first_name

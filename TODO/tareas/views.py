@@ -9,6 +9,7 @@ from tareas.serializers.categoria_serializer import CategoriaSerializer
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from comun.Auth.auth_token import CustomTokenAuthentication
+from usuarios.models import Usuario
 
 class TareaViewSet(viewsets.ModelViewSet):
     # Instancia de BL
@@ -29,7 +30,10 @@ class TareaViewSet(viewsets.ModelViewSet):
         return [permission() for permission in self.permission_classes]
     
     def list(self, request):
-        queryset = Tarea.objects.all()
+        # Filtramos por las tareas de cada usuario. El email debe de ser único
+        email_usuario = self.request.user.email
+        user = Usuario.objects.all().filter(email=email_usuario).first()
+        queryset = Tarea.objects.all().filter(id_fk_usuario=user.id)
         serializador = self.serializer_class(queryset, many=True)
         return Response(serializador.data)
     

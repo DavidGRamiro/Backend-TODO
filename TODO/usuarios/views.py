@@ -22,7 +22,7 @@ class UsuarioViewSet(viewsets.ModelViewSet):
     serializer_class = UsuarioSerializer
     
     def get_permissions(self):
-        if self.action in ['create','login','logout']:
+        if self.action in ['create','login','logout', 'list']:
             self.permission_classes = [AllowAny]
         else:
             self.permission_classes = [IsAuthenticated]
@@ -68,8 +68,17 @@ class RolViewSet(viewsets.ModelViewSet):
     
     # Instancia Bussiness Logic
     class_bl = RolBl()
-    authentication_classes = [TokenAuthentication]
+    authentication_classes = [CustomTokenAuthentication]
     permission_classes = [IsAuthenticated]
+    
+    
+    def get_permissions(self):
+        if self.action in ['create', 'list']:
+            self.permission_classes = [AllowAny]
+        else:
+            self.permission_classes = [IsAuthenticated]
+        return [permission() for permission in self.permission_classes]
+    
     
     def get_queryset(self):
         return super().get_queryset();
