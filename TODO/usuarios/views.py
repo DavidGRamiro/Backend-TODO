@@ -22,7 +22,7 @@ class UsuarioViewSet(viewsets.ModelViewSet):
     serializer_class = UsuarioSerializer
     
     def get_permissions(self):
-        if self.action in ['create','login','logout']:
+        if self.action in ['create','login','logout', 'list']:
             self.permission_classes = [AllowAny]
         else:
             self.permission_classes = [IsAuthenticated]
@@ -49,9 +49,14 @@ class UsuarioViewSet(viewsets.ModelViewSet):
         respuesta = self.class_bl.destroy(pk);
         return respuesta
     
+    @action(methods=['put'], detail=False, url_path='update_avatar', url_name='update_avatar')
+    def update_avatar(self, request):
+        respuesta = self.class_bl.update_avatar(request)
+        return respuesta
+    
     @action(methods=['post'],detail=False, url_path='login', url_name='login')
-    def login(self, request):
-        respuesta = self.class_bl.login_usuario(request);
+    def login(self, request, pk):
+        respuesta = self.class_bl.login_usuario(request,pk);
         return respuesta
     
     @action(methods=['get'],detail=False, url_path='auth', url_name='auth')
@@ -68,8 +73,16 @@ class RolViewSet(viewsets.ModelViewSet):
     
     # Instancia Bussiness Logic
     class_bl = RolBl()
-    authentication_classes = [TokenAuthentication]
+    authentication_classes = [CustomTokenAuthentication]
     permission_classes = [IsAuthenticated]
+    
+    
+    def get_permissions(self):
+        if self.action in ['create', 'list']:
+            self.permission_classes = [AllowAny]
+        else:
+            self.permission_classes = [IsAuthenticated]
+        return [permission() for permission in self.permission_classes]
     
     def get_queryset(self):
         return super().get_queryset();

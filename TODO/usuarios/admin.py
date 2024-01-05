@@ -6,7 +6,7 @@ from usuarios.models import Usuario, Rol
 @admin.register(Usuario)
 # Register your models here.
 class UsuarioAdmin(admin.ModelAdmin):
-    list_display = ('id','name', 'username','email','direccion')
+    list_display = ('id','name', 'username','email','avatar')
     search_fields = ('id', 'name')
 
 @admin.register(Rol)

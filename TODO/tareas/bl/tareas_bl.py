@@ -88,8 +88,8 @@ class TareaBL():
         tarea['tiempo_restante'] = diferencia.days
     
     def buscar_usuario(self,usuario):
-        
         from usuarios.models import Usuario
+        
         user = Usuario.objects.filter(email=usuario.email).first()
         if user is not None:
             return user

@@ -157,3 +157,14 @@ class UsuariosBl:
             return Response({ RESULTADO: USUARIO_DESLOGUEADO })
         except:
             pass
+    
+    # Actualizamos los datos de un usuario con el avatar que ha elegido
+    def update_avatar(self,request):
+        user = request.user
+        usuario = Usuario.objects.filter(email=user.email).first()
+        avatar_data = request.data['avatar']
+        
+        if usuario is not None:
+            usuario.avatar = avatar_data
+            usuario.save()
+            return Response({ RESULTADO: 'Avatar actualizado'})
