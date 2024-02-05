@@ -55,8 +55,8 @@ class UsuarioViewSet(viewsets.ModelViewSet):
         return respuesta
     
     @action(methods=['post'],detail=False, url_path='login', url_name='login')
-    def login(self, request, pk):
-        respuesta = self.class_bl.login_usuario(request,pk);
+    def login(self, request):
+        respuesta = self.class_bl.login_usuario(request);
         return respuesta
     
     @action(methods=['get'],detail=False, url_path='auth', url_name='auth')

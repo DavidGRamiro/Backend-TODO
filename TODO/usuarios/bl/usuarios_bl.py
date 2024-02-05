@@ -144,7 +144,8 @@ class UsuariosBl:
             user = model_to_dict(usuario_logueado)
             if user:
                 return Response({ RESULTADO: USUARIO_LOGUEADO, DATA: user })
-            
+            else:
+                return Response({ ERROR: USUARIO_NOT_FOUND })
         except:
             return Response({ ERROR: USUARIO_NOT_FOUND })
         
